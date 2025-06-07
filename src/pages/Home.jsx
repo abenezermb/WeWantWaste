@@ -36,9 +36,7 @@ export default function Home() {
   const vatAmount = currentSkip
     ? (currentSkip.price_before_vat * currentSkip.vat) / 100
     : 0;
-  const totalPrice = currentSkip
-    ? currentSkip.price_before_vat + vatAmount
-    : 0;
+  const totalPrice = currentSkip ? currentSkip.price_before_vat + vatAmount : 0;
 
   return (
     <div className="space-y-8">
@@ -82,8 +80,10 @@ export default function Home() {
                     {currentSkip.price_before_vat.toLocaleString()}
                   </p>
                   <p>
-                    <span className="font-semibold">VAT ({currentSkip.vat}%):</span> £
-                    {vatAmount.toFixed(2)}
+                    <span className="font-semibold">
+                      VAT ({currentSkip.vat}%):
+                    </span>{" "}
+                    £{vatAmount.toFixed(2)}
                   </p>
                   <p>
                     <span className="font-semibold">Total Price:</span> £
@@ -96,14 +96,14 @@ export default function Home() {
                     </p>
                   )}
                   <p>
-                    <span className="font-semibold">Allowed on Road:</span> {currentSkip.allowed_on_road ? "Yes" : "No"}
+                    <span className="font-semibold">Allowed on Road:</span>{" "}
+                    {currentSkip.allowed_on_road ? "Yes" : "No"}
                   </p>
                   <p>
-                    <span className="font-semibold">Allows Heavy Waste:</span> {currentSkip.allows_heavy_waste ? "Yes" : "No"}
+                    <span className="font-semibold">Allows Heavy Waste:</span>{" "}
+                    {currentSkip.allows_heavy_waste ? "Yes" : "No"}
                   </p>
-                  <button
-                    className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-                  >
+                  <button className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                     Choose this Skip
                   </button>
                 </div>
@@ -115,41 +115,89 @@ export default function Home() {
         {/* Details panel for md+ devices */}
         <div className="hidden md:block">
           {currentSkip ? (
-            <div className="p-6 bg-white rounded-lg shadow-lg space-y-4">
+            <div className="p-6 bg-white rounded-lg shadow-lg space-y-6">
+              {/* Skip Image */}
               <img
                 src="/4-yarder-skip.jpg"
                 alt={`${currentSkip.size} yard skip`}
-                className="w-full h-48 object-cover rounded-lg mb-4"
+                className="w-full h-48 object-cover rounded-lg"
               />
-              <h2 className="text-3xl font-semibold">
+
+              {/* Title */}
+              <h2 className="text-3xl font-semibold text-gray-800">
                 {currentSkip.size} Yard Skip
               </h2>
-              <p>
-                <span className="font-semibold">Hire Period:</span> {currentSkip.hire_period_days} days
-              </p>
-              <p>
-                <span className="font-semibold">Price (before VAT):</span> £{currentSkip.price_before_vat.toLocaleString()}
-              </p>
-              <p>
-                <span className="font-semibold">VAT ({currentSkip.vat}%):</span> £{vatAmount.toFixed(2)}
-              </p>
-              <p>
-                <span className="font-semibold">Total Price:</span> £{totalPrice.toFixed(2)}
-              </p>
-              {currentSkip.transport_cost != null && (
-                <p>
-                  <span className="font-semibold">Transport Cost:</span> £{currentSkip.transport_cost}
-                </p>
-              )}
-              <p>
-                <span className="font-semibold">Allowed on Road:</span> {currentSkip.allowed_on_road ? "Yes" : "No"}
-              </p>
-              <p>
-                <span className="font-semibold">Allows Heavy Waste:</span> {currentSkip.allows_heavy_waste ? "Yes" : "No"}
-              </p>
-              <button
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-              >
+
+              {/* Details */}
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Hire Period
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    {currentSkip.hire_period_days} days
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Price (Before VAT)
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    £{currentSkip.price_before_vat.toLocaleString()}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    VAT ({currentSkip.vat}%)
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    £{vatAmount.toFixed(2)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Total Price
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    £{totalPrice.toFixed(2)}
+                  </dd>
+                </div>
+
+                {currentSkip.transport_cost != null && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Transport Cost
+                    </dt>
+                    <dd className="mt-1 text-lg text-gray-700">
+                      £{currentSkip.transport_cost}
+                    </dd>
+                  </div>
+                )}
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Allowed on Road
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    {currentSkip.allowed_on_road ? "Yes" : "No"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Allows Heavy Waste
+                  </dt>
+                  <dd className="mt-1 text-lg text-gray-700">
+                    {currentSkip.allows_heavy_waste ? "Yes" : "No"}
+                  </dd>
+                </div>
+              </dl>
+
+              {/* Action Button */}
+              <button className="mt-6 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                 Choose this Skip
               </button>
             </div>
