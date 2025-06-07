@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import SkipCard from "../components/SkipCard";
+import {
+  FiCalendar,
+  FiTag,
+  FiPercent,
+  FiCreditCard,
+  FiTruck,
+} from "react-icons/fi";
+import { FaRoad, FaBoxes } from "react-icons/fa";
 
 export default function Home() {
   const [skips, setSkips] = useState([]);
@@ -62,48 +70,59 @@ export default function Home() {
 
               {/* Inline details for mobile only */}
               {currentSkip?.id === skip.id && (
-                <div className="md:hidden p-4 bg-white rounded-lg shadow-lg mt-2 space-y-2">
+                <div className="md:hidden p-4 bg-white rounded-lg shadow-lg mt-2 space-y-4">
                   <img
                     src="/4-yarder-skip.jpg"
                     alt={`${currentSkip.size} yard skip`}
                     className="w-full h-40 object-cover rounded-lg"
                   />
-                  <h2 className="text-2xl font-semibold">
+                  <h2 className="text-2xl font-semibold text-gray-800">
                     {currentSkip.size} Yard Skip
                   </h2>
-                  <p>
-                    <span className="font-semibold">Hire Period:</span>{" "}
-                    {currentSkip.hire_period_days} days
-                  </p>
-                  <p>
-                    <span className="font-semibold">Price (before VAT):</span> £
-                    {currentSkip.price_before_vat.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-semibold">
-                      VAT ({currentSkip.vat}%):
-                    </span>{" "}
-                    £{vatAmount.toFixed(2)}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Total Price:</span> £
-                    {totalPrice.toFixed(2)}
-                  </p>
-                  {currentSkip.transport_cost != null && (
-                    <p>
-                      <span className="font-semibold">Transport Cost:</span> £
-                      {currentSkip.transport_cost}
-                    </p>
-                  )}
-                  <p>
-                    <span className="font-semibold">Allowed on Road:</span>{" "}
-                    {currentSkip.allowed_on_road ? "Yes" : "No"}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Allows Heavy Waste:</span>{" "}
-                    {currentSkip.allows_heavy_waste ? "Yes" : "No"}
-                  </p>
-                  <button className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FiCalendar className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">Hire Period:</span>
+                      <span>{currentSkip.hire_period_days} days</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FiTag className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">Price (Before VAT):</span>
+                      <span>£{currentSkip.price_before_vat.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FiPercent className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">VAT ({currentSkip.vat}%):</span>
+                      <span>£{vatAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FiCreditCard className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">Total Price:</span>
+                      <span>£{totalPrice.toFixed(2)}</span>
+                    </div>
+                    {currentSkip.transport_cost != null && (
+                      <div className="flex items-center space-x-2 text-gray-700">
+                        <FiTruck className="w-5 h-5 text-blue-600" />
+                        <span className="font-semibold">Transport Cost:</span>
+                        <span>£{currentSkip.transport_cost}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FaRoad className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">Allowed on Road:</span>
+                      <span>{currentSkip.allowed_on_road ? "Yes" : "No"}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <FaBoxes className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold">Allows Heavy Waste:</span>
+                      <span>{currentSkip.allows_heavy_waste ? "Yes" : "No"}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+                  >
                     Choose this Skip
                   </button>
                 </div>
@@ -131,8 +150,9 @@ export default function Home() {
               {/* Details */}
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    Hire Period
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FiCalendar className="w-5 h-5 text-blue-600" />
+                    <span>Hire Period</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     {currentSkip.hire_period_days} days
@@ -140,8 +160,9 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    Price (Before VAT)
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FiTag className="w-5 h-5 text-blue-600" />
+                    <span>Price (Before VAT)</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     £{currentSkip.price_before_vat.toLocaleString()}
@@ -149,8 +170,9 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    VAT ({currentSkip.vat}%)
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FiPercent className="w-5 h-5 text-blue-600" />
+                    <span>VAT ({currentSkip.vat}%)</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     £{vatAmount.toFixed(2)}
@@ -158,8 +180,9 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    Total Price
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FiCreditCard className="w-5 h-5 text-blue-600" />
+                    <span>Total Price</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     £{totalPrice.toFixed(2)}
@@ -168,8 +191,9 @@ export default function Home() {
 
                 {currentSkip.transport_cost != null && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
-                      Transport Cost
+                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                      <FiTruck className="w-5 h-5 text-blue-600" />
+                      <span>Transport Cost</span>
                     </dt>
                     <dd className="mt-1 text-lg text-gray-700">
                       £{currentSkip.transport_cost}
@@ -178,8 +202,9 @@ export default function Home() {
                 )}
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    Allowed on Road
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FaRoad className="w-5 h-5 text-blue-600" />
+                    <span>Allowed on Road</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     {currentSkip.allowed_on_road ? "Yes" : "No"}
@@ -187,8 +212,9 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    Allows Heavy Waste
+                  <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+                    <FaBoxes className="w-5 h-5 text-blue-600" />
+                    <span>Allows Heavy Waste</span>
                   </dt>
                   <dd className="mt-1 text-lg text-gray-700">
                     {currentSkip.allows_heavy_waste ? "Yes" : "No"}
