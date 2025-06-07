@@ -1,3 +1,4 @@
+// sidebar.jsx
 import StepCard from "./StepCard";
 import { FaTrashCan, FaLocationDot } from "react-icons/fa6";
 import { FiTruck, FiShield, FiCalendar, FiCreditCard } from "react-icons/fi";
