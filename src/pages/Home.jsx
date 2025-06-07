@@ -13,12 +13,17 @@ export default function Home() {
         );
         const data = await response.json();
         setSkips(data);
+        // select first skip by default
+        if (data.length > 0) {
+          setCurrentSkip(data[0]);
+        }
       } catch (error) {
         console.error("Error fetching skips:", error);
       }
     })();
   }, []);
 
+  // Show loading spinner while data is fetching
   if (!skips.length) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -27,6 +32,7 @@ export default function Home() {
     );
   }
 
+  // Compute VAT and total price for selected skip
   const vatAmount = currentSkip
     ? (currentSkip.price_before_vat * currentSkip.vat) / 100
     : 0;
