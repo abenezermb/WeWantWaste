@@ -11,7 +11,7 @@ export default function App() {
       {/* on small: column; on md+: row */}
       <div className="flex flex-1 flex-col md:flex-row">
         {/* Sidebar hidden on mobile, fixed width on md+ */}
-        <aside className="hidden md:block md:w-1/4 lg:w-1/5 bg-transparent">
+        <aside className="hidden md:block md:w-1/4 lg:w-[15%] bg-transparent">
           <Sidebar />
         </aside>
 

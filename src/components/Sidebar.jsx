@@ -14,7 +14,7 @@ const steps = [
 
 export default function Sidebar() {
   return (
-    <aside className="hidden md:flex flex-col fixed top-20 left-0 bottom-0 w-72 bg-white p-6 rounded-tr-2xl rounded-br-2xl shadow-xl overflow-y-auto z-40">
+    <aside className="  hidden md:flex flex-col fixed top-20 left-0 bottom-0 w-72 bg-white p-6 rounded-tr-2xl rounded-br-2xl shadow-xl overflow-y-auto z-40">
       {/* Sidebar Header */}
       <h2 className="text-2xl font-bold text-blue-600 mb-6 text-center">
         Your Progress

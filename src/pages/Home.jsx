@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="space-y-8">
+      <div className="space-y-8 md:w-[90%]">
         <h1 className="text-4xl md:text-5xl font-bold text-blue-600 text-center">
           Choose Your Skip Size
         </h1>
