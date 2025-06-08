@@ -21,7 +21,7 @@ export default function Home() {
           "https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
         );
         const data = await response.json();
-        console.log("**** data: ",data)
+        console.log("**** data: ", data);
         setSkips(data);
         // select first skip by default
         if (data.length > 0) {
@@ -145,7 +145,7 @@ export default function Home() {
               <img
                 src="/4-yarder-skip.jpg"
                 alt={`${currentSkip.size} yard skip`}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-[35vh] object-cover rounded-lg"
               />
 
               {/* Title */}
