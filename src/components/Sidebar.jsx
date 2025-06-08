@@ -15,7 +15,7 @@ const steps = [
 export default function Sidebar() {
   return (
     <aside className="h-full p-6 bg-white rounded-lg shadow-lg flex flex-col">
-      <h2 className="text-xl font-bold text-blue-600 mb-6 text-center">
+      <h2 className="text-3xl font-bold text-blue-600 mb-6 text-center">
         Your Progress
       </h2>
       <nav className="flex-1 overflow-y-auto space-y-4">

@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-4xl md:text-5xl font-bold text-blue-600 text-center">
+      <h1 className="text-4xl md:text-3xl font-bold text-blue-600 text-center">
         Choose Your Skip Size
       </h1>
 
@@ -78,7 +78,7 @@ export default function Home() {
                     alt={`${currentSkip.size} yard skip`}
                     className="w-full h-40 object-cover rounded-lg"
                   />
-                  <h2 className="text-2xl font-semibold text-gray-800">
+                  <h2 className="text-lg font-semibold text-gray-800">
                     {currentSkip.size} Yard Skip
                   </h2>
 
@@ -229,7 +229,7 @@ export default function Home() {
               </dl>
 
               {/* Action Button */}
-              <button className="mt-6 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+              <button className="mt-6 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition text-lg">
                 Choose this Skip
               </button>
             </div>
