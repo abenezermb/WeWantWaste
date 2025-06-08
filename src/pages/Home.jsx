@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SkipCard from "../components/SkipCard";
 import {
   FiCalendar,
@@ -13,7 +13,12 @@ import Chatbot from "../components/Chatbot";
 export default function Home() {
   const [skips, setSkips] = useState([]);
   const [currentSkip, setCurrentSkip] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allowOnRoadOnly, setAllowOnRoadOnly] = useState(false);
+  const [heavyWasteOnly, setHeavyWasteOnly] = useState(false);
+  const detailsRef = useRef(null);
 
+  // Fetch skip data and select default
   useEffect(() => {
     (async () => {
       try {
@@ -22,15 +27,19 @@ export default function Home() {
         );
         const data = await response.json();
         setSkips(data);
-        // select first skip by default
-        if (data.length > 0) setCurrentSkip(data[0]);
-      } catch (error) {
-        console.error("Error fetching skips:", error);
+        if (data.length) setCurrentSkip(data[0]);
+      } catch (err) {
+        console.error(err);
       }
     })();
   }, []);
 
-  // loading state
+  // Scroll details into view when currentSkip changes on mobile
+  useEffect(() => {
+    detailsRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentSkip]);
+
+  // Loading state
   if (!skips.length) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -39,7 +48,7 @@ export default function Home() {
     );
   }
 
-  // compute pricing
+  // Compute pricing
   const vatAmount = currentSkip
     ? (currentSkip.price_before_vat * currentSkip.vat) / 100
     : 0;
@@ -47,17 +56,56 @@ export default function Home() {
     ? currentSkip.price_before_vat + vatAmount
     : 0;
 
+  // Apply search & filters
+  const filteredSkips = skips.filter((skip) => {
+    const matchSize = skip.size.toString().includes(searchTerm.trim());
+    const matchRoad = !allowOnRoadOnly || skip.allowed_on_road;
+    const matchHeavy = !heavyWasteOnly || skip.allows_heavy_waste;
+    return matchSize && matchRoad && matchHeavy;
+  });
+
   return (
     <>
-      <div className="space-y-8 md:w-[90%]">
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-600 text-center">
+      <div className="space-y-6 md:w-[90%] mx-auto px-4">
+        {/* Search & Filters */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <input
+            type="text"
+            placeholder="Search by size..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full sm:w-1/3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <div className="flex items-center space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                checked={allowOnRoadOnly}
+                onChange={(e) => setAllowOnRoadOnly(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-blue-600"
+              />
+              <span className="ml-2 text-gray-700">Allowed on Road</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                checked={heavyWasteOnly}
+                onChange={(e) => setHeavyWasteOnly(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-blue-600"
+              />
+              <span className="ml-2 text-gray-700">Heavy Waste</span>
+            </label>
+          </div>
+        </div>
+
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-600 text-center">
           Choose Your Skip Size
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Skip list with inline details on mobile */}
+          {/* Skip List */}
           <div className="space-y-4">
-            {skips.map((skip) => (
+            {filteredSkips.map((skip) => (
               <div key={skip.id}>
                 <div
                   onClick={() => setCurrentSkip(skip)}
@@ -70,60 +118,34 @@ export default function Home() {
                   <SkipCard skip={skip} setCurrentSkip={setCurrentSkip} />
                 </div>
 
-                {/* Inline details for mobile only */}
+                {/* Mobile inline details */}
                 {currentSkip?.id === skip.id && (
-                  <div className="md:hidden p-4 bg-white rounded-lg shadow-lg mt-2 space-y-4">
+                  <div
+                    ref={detailsRef}
+                    className="md:hidden p-4 bg-white rounded-lg shadow-lg mt-2 space-y-4"
+                  >
+                    {/* Image */}
                     <img
                       src="/4-yarder-skip.jpg"
-                      alt={`${currentSkip.size} yard skip`}
+                      alt={`${skip.size} yard skip`}
                       className="w-full h-40 object-cover rounded-lg"
                     />
+                    {/* Title */}
                     <h2 className="text-lg font-semibold text-gray-800">
-                      {currentSkip.size} Yard Skip
+                      {skip.size} Yard Skip
                     </h2>
-
+                    {/* Details list */}
                     <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FiCalendar className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">Hire Period:</span>
-                        <span>{currentSkip.hire_period_days} days</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FiTag className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">Price (Before VAT):</span>
-                        <span>
-                          £{currentSkip.price_before_vat.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FiPercent className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">VAT ({currentSkip.vat}%):</span>
-                        <span>£{vatAmount.toFixed(2)}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FiCreditCard className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">Total Price:</span>
-                        <span>£{totalPrice.toFixed(2)}</span>
-                      </div>
-                      {currentSkip.transport_cost != null && (
-                        <div className="flex items-center space-x-2 text-gray-700">
-                          <FiTruck className="w-5 h-5 text-blue-600" />
-                          <span className="font-semibold">Transport Cost:</span>
-                          <span>£{currentSkip.transport_cost}</span>
-                        </div>
+                      <DetailRow icon={<FiCalendar />} label="Hire Period" value={`${skip.hire_period_days} days`} />
+                      <DetailRow icon={<FiTag />} label="Price (Before VAT)" value={`£${skip.price_before_vat.toLocaleString()}`} />
+                      <DetailRow icon={<FiPercent />} label={`VAT (${skip.vat}%)`} value={`£${vatAmount.toFixed(2)}`} />
+                      <DetailRow icon={<FiCreditCard />} label="Total Price" value={`£${totalPrice.toFixed(2)}`} />
+                      {skip.transport_cost != null && (
+                        <DetailRow icon={<FiTruck />} label="Transport Cost" value={`£${skip.transport_cost}`} />
                       )}
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FaRoad className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">Allowed on Road:</span>
-                        <span>{currentSkip.allowed_on_road ? "Yes" : "No"}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-gray-700">
-                        <FaBoxes className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold">Allows Heavy Waste:</span>
-                        <span>{currentSkip.allows_heavy_waste ? "Yes" : "No"}</span>
-                      </div>
+                      <DetailRow icon={<FaRoad />} label="Allowed on Road" value={skip.allowed_on_road ? "Yes" : "No"} />
+                      <DetailRow icon={<FaBoxes />} label="Allows Heavy Waste" value={skip.allows_heavy_waste ? "Yes" : "No"} />
                     </div>
-
                     <button className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                       Choose this Skip
                     </button>
@@ -133,98 +155,33 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Desktop details panel */}
+          {/* Desktop Details Panel */}
           <div className="hidden md:block md:sticky md:top-20 self-start max-h-[80vh] overflow-auto">
             {currentSkip ? (
               <div className="p-6 bg-white rounded-lg shadow-lg space-y-6">
-                {/* Skip Image */}
+                {/* Image */}
                 <img
                   src="/4-yarder-skip.jpg"
                   alt={`${currentSkip.size} yard skip`}
                   className="w-full h-[35vh] object-cover rounded-lg"
                 />
-
                 {/* Title */}
                 <h2 className="text-3xl font-semibold text-gray-800">
                   {currentSkip.size} Yard Skip
                 </h2>
-
-                {/* Details */}
+                {/* Details grid */}
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FiCalendar className="w-5 h-5 text-blue-600" />
-                      <span>Hire Period</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      {currentSkip.hire_period_days} days
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FiTag className="w-5 h-5 text-blue-600" />
-                      <span>Price (Before VAT)</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      £{currentSkip.price_before_vat.toLocaleString()}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FiPercent className="w-5 h-5 text-blue-600" />
-                      <span>VAT ({currentSkip.vat}%)</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      £{vatAmount.toFixed(2)}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FiCreditCard className="w-5 h-5 text-blue-600" />
-                      <span>Total Price</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      £{totalPrice.toFixed(2)}
-                    </dd>
-                  </div>
-
+                  <DetailGridRow icon={<FiCalendar />} label="Hire Period" value={`${currentSkip.hire_period_days} days`} />
+                  <DetailGridRow icon={<FiTag />} label="Price (Before VAT)" value={`£${currentSkip.price_before_vat.toLocaleString()}`} />
+                  <DetailGridRow icon={<FiPercent />} label={`VAT (${currentSkip.vat}%)`} value={`£${vatAmount.toFixed(2)}`} />
+                  <DetailGridRow icon={<FiCreditCard />} label="Total Price" value={`£${totalPrice.toFixed(2)}`} />
                   {currentSkip.transport_cost != null && (
-                    <div>
-                      <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                        <FiTruck className="w-5 h-5 text-blue-600" />
-                        <span>Transport Cost</span>
-                      </dt>
-                      <dd className="mt-1 text-lg text-gray-700">
-                        £{currentSkip.transport_cost}
-                      </dd>
-                    </div>
+                    <DetailGridRow icon={<FiTruck />} label="Transport Cost" value={`£${currentSkip.transport_cost}`} />
                   )}
-
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FaRoad className="w-5 h-5 text-blue-600" />
-                      <span>Allowed on Road</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      {currentSkip.allowed_on_road ? "Yes" : "No"}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
-                      <FaBoxes className="w-5 h-5 text-blue-600" />
-                      <span>Allows Heavy Waste</span>
-                    </dt>
-                    <dd className="mt-1 text-lg text-gray-700">
-                      {currentSkip.allows_heavy_waste ? "Yes" : "No"}
-                    </dd>
-                  </div>
+                  <DetailGridRow icon={<FaRoad />} label="Allowed on Road" value={currentSkip.allowed_on_road ? "Yes" : "No"} />
+                  <DetailGridRow icon={<FaBoxes />} label="Allows Heavy Waste" value={currentSkip.allows_heavy_waste ? "Yes" : "No"} />
                 </dl>
-
-                {/* Action Button */}
+                {/* Action */}
                 <button className="mt-6 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition text-lg">
                   Choose this Skip
                 </button>
@@ -238,10 +195,29 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Chatbot floating at bottom-right */}
+      {/* Chatbot */}
       <div className="fixed bottom-4 right-4">
         <Chatbot />
       </div>
     </>
   );
 }
+
+// Helper components for detail rows
+const DetailRow = ({ icon, label, value }) => (
+  <div className="flex items-center space-x-2 text-gray-700">
+    <div className="text-blue-600">{icon}</div>
+    <span className="font-semibold">{label}:</span>
+    <span>{value}</span>
+  </div>
+);
+
+const DetailGridRow = ({ icon, label, value }) => (
+  <div>
+    <dt className="flex items-center text-sm font-medium text-gray-500 space-x-2">
+      <div className="text-blue-600">{icon}</div>
+      <span>{label}</span>
+    </dt>
+    <dd className="mt-1 text-lg text-gray-700">{value}</dd>
+  </div>
+);
