@@ -8,6 +8,7 @@ import {
   FiTruck,
 } from "react-icons/fi";
 import { FaRoad, FaBoxes } from "react-icons/fa";
+import Chatbot from "../components/Chatbot";
 
 export default function Home() {
   const [skips, setSkips] = useState([]);
@@ -20,6 +21,7 @@ export default function Home() {
           "https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
         );
         const data = await response.json();
+        console.log("**** data: ",data)
         setSkips(data);
         // select first skip by default
         if (data.length > 0) {
@@ -89,11 +91,15 @@ export default function Home() {
                     <div className="flex items-center space-x-2 text-gray-700">
                       <FiTag className="w-5 h-5 text-blue-600" />
                       <span className="font-semibold">Price (Before VAT):</span>
-                      <span>£{currentSkip.price_before_vat.toLocaleString()}</span>
+                      <span>
+                        £{currentSkip.price_before_vat.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-gray-700">
                       <FiPercent className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold">VAT ({currentSkip.vat}%):</span>
+                      <span className="font-semibold">
+                        VAT ({currentSkip.vat}%):
+                      </span>
                       <span>£{vatAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-gray-700">
@@ -116,13 +122,13 @@ export default function Home() {
                     <div className="flex items-center space-x-2 text-gray-700">
                       <FaBoxes className="w-5 h-5 text-blue-600" />
                       <span className="font-semibold">Allows Heavy Waste:</span>
-                      <span>{currentSkip.allows_heavy_waste ? "Yes" : "No"}</span>
+                      <span>
+                        {currentSkip.allows_heavy_waste ? "Yes" : "No"}
+                      </span>
                     </div>
                   </div>
 
-                  <button
-                    className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-                  >
+                  <button className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                     Choose this Skip
                   </button>
                 </div>
@@ -233,6 +239,10 @@ export default function Home() {
             </div>
           )}
         </div>
+      </div>
+      {/* Chatbot floating at bottom-right */}
+      <div className="fixed bottom-4 right-4">
+        <Chatbot />
       </div>
     </div>
   );
