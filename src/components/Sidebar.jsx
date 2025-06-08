@@ -1,6 +1,6 @@
 import React from "react";
 import StepCard from "./StepCard";
-import { FaLocationDot, FaTrashCan } from "react-icons/fa6";
+import { FaTrashCan, FaLocationDot } from "react-icons/fa6";
 import { FiTruck, FiShield, FiCalendar, FiCreditCard } from "react-icons/fi";
 
 const steps = [
@@ -14,14 +14,17 @@ const steps = [
 
 export default function Sidebar() {
   return (
-    <aside className="h-full p-6 bg-white rounded-lg shadow-lg flex flex-col">
-      <h2 className="text-3xl font-bold text-blue-600 mb-6 text-center">
+    <aside className="hidden md:flex flex-col fixed top-20 left-0 bottom-0 w-72 bg-white p-6 rounded-tr-2xl rounded-br-2xl shadow-xl overflow-y-auto z-40">
+      {/* Sidebar Header */}
+      <h2 className="text-2xl font-bold text-blue-600 mb-6 text-center">
         Your Progress
       </h2>
-      <nav className="flex-1 overflow-y-auto space-y-4">
-        {steps.map((step, i) => (
+
+      {/* Steps Navigation */}
+      <nav className="flex-1 space-y-4">
+        {steps.map((step, index) => (
           <StepCard
-            key={i}
+            key={index}
             title={step.title}
             active={step.active}
             icon={step.component}
