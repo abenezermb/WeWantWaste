@@ -4,4 +4,6 @@ I leaned on card-based design to tie all the elements together. Each skip option
 
 To help power users, I put search and filter controls right at the top. You can jump straight to “road-legal” or “heavy waste” skips without endless scrolling. And when you click a card, the detail panel updates instantly—no full page reload—so you never lose your spot.
 
+Additionally, I have positioned a chatbot at the bottom right corner with frequently asked questions listed for the user to choose. Alternatively, the user is allowed to type their own questions. 
+
 Under the hood, I built this on a tight design system: 8px spacing, shared React/Tailwind components, and ARIA roles to keep everything accessible. My goal was to strike a balance between clarity, cohesion, and that human touch that makes booking a skip feel… well, a little friendlier.
